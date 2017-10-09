@@ -453,8 +453,13 @@ class YowsupCliLayer(Cli, YowInterfaceLayer):
     def onPresenceChange(self, entity):
         status="offline"
         if entity.getType() is None:
-            status="online"            
-        self.output("%s %s %s lastseen %s seconds ago" % (entity.getFrom(), entity.getTag(), status, entity.getLast()))
+            status="online"
+            
+        ltime,formattedDate=entity.getLast(),"none"
+        if ltime is not None:   
+            formattedDate = datetime.datetime.fromtimestamp(float(ltime)).strftime('%d-%m-%Y %H:%M.%S')
+            
+        self.output("%s %s - lastseen %s - from %s" % (entity.getTag(), status, formattedDate, entity.getFrom()))
         
     @ProtocolEntityCallback("chatstate")
     def onChatstate(self, entity):
